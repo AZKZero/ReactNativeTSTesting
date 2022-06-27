@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {BaseService, GET, Query, Response} from 'ts-retrofit';
 
 export interface Bio {
@@ -36,6 +37,30 @@ export interface Meta {
   price: Price;
 }
 
+export interface StatsOperator {
+  url: string;
+  name: string;
+  header: string;
+  operator: string;
+  time_played: string;
+  kills: string;
+  deaths: string;
+  kd: string;
+  wins: string;
+  losses: string;
+  win_: string;
+  headshots_: string;
+  dbnos: string;
+  xp: string;
+  melee_kills: string;
+  operator_stat: string;
+  operator_img: string;
+}
+
+export interface APIResponse<T> {
+  data: T;
+}
+
 export interface APIResponseArray<T> {
   data: T[];
 }
@@ -43,7 +68,6 @@ export interface APIResponseArray<T> {
 export class OperatorService extends BaseService {
   @GET('/op-list/list')
   async listOperators(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Query('attacker') attacker: boolean,
   ): Promise<Response<APIResponseArray<Operator>>> {
     return <Response<APIResponseArray<Operator>>>{};
@@ -51,9 +75,17 @@ export class OperatorService extends BaseService {
 
   @GET('/op-list/operator_det')
   async getOperator(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Query('op_id') operatorId: string,
   ): Promise<Response<Operator>> {
     return <Response<Operator>>{};
+  }
+
+  @GET('/op-list/operator_stats')
+  async getOperatorStats(
+    @Query('platform') platform: string,
+    @Query('uname') username: string,
+    @Query('op_id') operatorId: string,
+  ): Promise<Response<StatsOperator>> {
+    return <Response<StatsOperator>>{};
   }
 }
