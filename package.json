@@ -14,6 +14,8 @@
     "@hookstate/core": "^4.0.0-rc10",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
+    "@rneui/base": "^4.0.0-rc.5",
+    "@rneui/themed": "^4.0.0-rc.5",
     "customize-cra": "^1.0.0",
     "expo": "^45.0.0",
     "expo-camera": "~12.2.0",
@@ -22,6 +24,7 @@
     "react-app-rewired": "^2.2.1",
     "react-circular-progressbar": "^2.0.4",
     "react-native": "0.68.2",
+    "react-native-expo-image-cache": "^4.1.0",
     "react-native-grid-list": "^1.1.0",
     "react-native-htmlview": "^0.16.0",
     "react-native-progress": "^5.0.0",
@@ -31,6 +34,7 @@
     "react-native-scripts": "2.0.1",
     "react-native-super-grid": "^4.4.0",
     "react-native-svg": "^12.3.0",
+    "react-native-vector-icons": "^9.2.0",
     "ts-retrofit": "^1.15.0",
     "ts-retrofit2": "^2.2.2"
   },
@@ -55,7 +59,7 @@
     "react-test-renderer": "17.0.2",
     "typescript": "^4.4.4"
   },
-  "browser":{
+  "browser": {
     "child_process": false
   },
   "resolutions": {

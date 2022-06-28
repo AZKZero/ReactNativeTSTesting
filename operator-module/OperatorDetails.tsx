@@ -59,6 +59,12 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
       maxWidth: 200,
       height: 200,
     },
+    image2: {
+      flex: 2,
+      maxWidth: 100,
+      height: 100,
+      margin: 10
+    },
   });
 
   const opStatState = useState<StatsOperator>(() => service.getOperatorStats('pc', 'Ghostware-Zero', route.params.id).then((value) => value.data))
@@ -90,6 +96,8 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
               <Text style={styles.highText}>{opDetailsState.get().name}</Text>
               <Text style={styles.highText}>
                 {opDetailsState.get().bio.real_name}
+              </Text><Text style={styles.highText}>
+                {opDetailsState.get().unit}
               </Text>
             </View>
           </View>
@@ -124,11 +132,11 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
             }
           }} source={{html: `<p><b>Price: </b>  <span style="color: yellow">${opDetailsState.get().meta.price.renown} Renown</span>  <span style="color: cadetblue">${opDetailsState.get().meta.price.r6credits} R6</span></p>`}}/>
           {opStatState.promised?
-            <Progress.Pie indeterminate={true} size={50} />
+            <Progress.Pie indeterminate={true} size={50} style={{alignSelf:'center'}} />
             : <View>
                 <View style={styles.flex}>
                   <Image
-                    style={styles.image}
+                    style={styles.image2}
                     source={{uri: (opStatState.get() as StatsOperator).header}}
                   />
                   <View style={{flex: 3}}>

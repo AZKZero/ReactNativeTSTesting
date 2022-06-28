@@ -72,6 +72,10 @@ export class OperatorService extends BaseService {
   ): Promise<Response<APIResponseArray<Operator>>> {
     return <Response<APIResponseArray<Operator>>>{};
   }
+  @GET('/op-list/listAll')
+  async listAllOperators(): Promise<Response<APIResponseArray<Operator>>> {
+    return <Response<APIResponseArray<Operator>>>{};
+  }
 
   @GET('/op-list/operator_det')
   async getOperator(

@@ -94,8 +94,7 @@ export const EE1D = createState({uses: 3, cooldown: 0});
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} options={{title: 'Home?'}} />
+      <Stack.Navigator initialRouteName="Maximilan">
         <Stack.Screen
           name="HookTest"
           options={{title: 'EY?'}}
@@ -103,7 +102,7 @@ const App = () => {
         />
         <Stack.Screen
           name="Maximilan"
-          options={{title: 'Lelx?'}}
+          options={{title: 'Operators'}}
           component={OperatorList}
         />
         <Stack.Screen
@@ -111,6 +110,7 @@ const App = () => {
           options={({route}: OpProp) => ({title: route.params.id})}
           component={OperatorDetails}
         />
+        <Stack.Screen name="Home" component={Home} options={{title: 'Home?'}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -138,12 +138,10 @@ export const styles = StyleSheet.create({
 export default App;
 
 const myLogCallback = (config: RequestConfig, response: Response) => {
-  const log = `[${config.method}] ${config.url} ${
-    response.status
-  } ${JSON.stringify(response.data)}`;
+  const log = `[${config.method}] ${config.url} ${response.status} `; //${JSON.stringify(response.data)}
   console.log(log); // [GET] http://localhost:12345/ping 200
 };
 export const service = new ServiceBuilder()
-  .setEndpoint('http://10.0.2.2:3000')
+  .setEndpoint('http://192.168.88.123:3000')
   .setLogCallback(myLogCallback)
   .build(OperatorService);

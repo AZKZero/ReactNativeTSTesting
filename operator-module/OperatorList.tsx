@@ -1,5 +1,4 @@
 import {
-  Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -15,6 +14,8 @@ import {service, StackParamMap} from '../App';
 import {Operator} from '../api/retrofit';
 import {FlatGrid} from 'react-native-super-grid';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ButtonGroup} from '@rneui/themed';
+import { Image } from "react-native-expo-image-cache";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,8 +28,15 @@ const styles = StyleSheet.create({
     height: 44,
   },
   image: {
-    maxWidth: 100,
-    height: 100,
+    maxWidth: 70,
+    height: 70,
+  },
+  lowText: {
+    padding: 10,
+    fontSize: 18,
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 export const OperatorList = ({
@@ -42,23 +50,64 @@ export const OperatorList = ({
   const opListState = useState<Operator[]>([]);
 
   useHookEffect(() => {
-    service.listOperators(true).then(value => opListState.set(value.data.data));
+    service.listAllOperators().then(value => opListState.set(value.data.data));
   }, []);
+
+  let lastIndex: boolean | null = null;
+
+  // const attackerSelected = useState(false);
+  // const defenderSelected = useState(false);
+  // const attackerSelected = false;
+  // const defenderSelected = false;
+
+  const selectedIndex = useState<number | null>(null);
+
+  useHookEffect(() => {
+    const index = selectedIndex.value;
+    if (index === 0) {
+      service
+        .listOperators(true)
+        .then(value => opListState.set(value.data.data));
+    } else if (index === 1) {
+      service
+        .listOperators(false)
+        .then(value => opListState.set(value.data.data));
+    } else {
+      service
+        .listAllOperators()
+        .then(value => opListState.set(value.data.data));
+    }
+  }, [selectedIndex.value]);
 
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+
+      <ButtonGroup
+        selectedIndex={selectedIndex.get()}
+        buttons={['Attackers', 'Defenders']}
+        onPress={index => {
+          if (index === lastIndex) {
+            selectedIndex.set(() => null);
+          } else {
+            lastIndex = index;
+            selectedIndex.set(() => index);
+          }
+        }}
+      />
+
       <FlatGrid
         itemDimension={130}
         data={opListState.get()}
+        style={{marginBottom: 50}}
         renderItem={info => (
           <TouchableHighlight
             onPress={() =>
               navigation.navigate('OpDetails', {id: info.item.id})
             }>
             <View>
-              <Image style={styles.image} source={{uri: info.item.png}} />
-              <Text style={styles.item}>{info.item.name}</Text>
+              <Image style={styles.image} {...{uri: info.item.png}} />
+              <Text style={styles.lowText}>{info.item.name}</Text>
             </View>
           </TouchableHighlight>
         )}
