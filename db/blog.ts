@@ -1,6 +1,11 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm/browser';
 import {Author} from './author';
-import {JoinColumn} from 'typeorm';
+import {JoinColumn} from 'typeorm/browser';
 
 @Entity('blog')
 export class Blog {
@@ -10,7 +15,7 @@ export class Blog {
     this.author = author;
   }
 
-  @PrimaryGeneratedColumn({name: 'id'})
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column('text', {nullable: true})

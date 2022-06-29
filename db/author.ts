@@ -3,13 +3,13 @@ import {
   Column,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
+} from 'typeorm/browser';
 import {Blog} from './blog';
 
 @Entity('author')
 export class Author {
   // @ts-ignore
-  @PrimaryGeneratedColumn({name: 'id', type: 'integer'})
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column('text', {nullable: true})

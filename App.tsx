@@ -27,7 +27,7 @@ import {OperatorService} from './api/retrofit';
 import {OperatorDetails} from './operator-module/OperatorDetails';
 import {Blog} from './db/blog';
 import {Author} from './db/author';
-import {DataSource} from 'typeorm';
+import {DataSource} from 'typeorm/browser';
 import {DBList} from './db-testing-module/DBList';
 import {CreateBlog} from './db-testing-module/CreateBlog';
 
@@ -111,23 +111,23 @@ class App extends React.Component {
 
   async seedServer(datasource: DataSource) {
     dataSource = datasource;
-    const author = await datasource
+    // IMPLEMENTATION 1
+    const author = new Author('P u l s e w r a i t h');
+    await datasource.getRepository(Author).save(author);
+
+    // IMPLEMENTATION 2
+    /*const author = await datasource
       .getRepository(Author)
-      .save(new Author('P u l s e w r a i t h'));
+      .save(new Author('P u l s e w r a i t h'));*/
     console.log(JSON.stringify(author));
-    const blog1 = new Blog(
-      'Blog 1- Rafia apuke jalaitesi',
-      'Ajke rafia apur ashepashe asi, uni ar shimon vai ki jeno shikhtese',
-      author,
-    );
-    const blog2 = new Blog(
-      'Blog 2 - Rafia apu confused ken jani',
-      'ki jani ki bostu',
-      author,
-    );
+    const blog1 = new Blog('Blog 1', 'Content 1', author);
+    const blog2 = new Blog('Blog 2', 'Content 2', author);
     const blogRepository = dataSource.getRepository(Blog);
     await blogRepository.save(blog1);
     await blogRepository.save(blog2);
+
+    console.log(JSON.stringify(await datasource.getRepository(Author).find()));
+    console.log(JSON.stringify(await blogRepository.find()));
   }
 
   connect() {
