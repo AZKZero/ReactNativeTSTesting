@@ -2,6 +2,7 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Button,
   Text,
   TouchableHighlight,
   useColorScheme,
@@ -15,7 +16,7 @@ import {Operator} from '../api/retrofit';
 import {FlatGrid} from 'react-native-super-grid';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ButtonGroup} from '@rneui/themed';
-import { Image } from "react-native-expo-image-cache";
+import {Image} from 'react-native-expo-image-cache';
 
 const styles = StyleSheet.create({
   container: {
@@ -82,7 +83,10 @@ export const OperatorList = ({
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-
+      <Button
+        title={'Go to DB'}
+        onPress={() => navigation.navigate('DBModule')}
+      />
       <ButtonGroup
         selectedIndex={selectedIndex.get()}
         buttons={['Attackers', 'Defenders']}

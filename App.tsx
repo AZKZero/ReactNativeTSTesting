@@ -8,13 +8,14 @@
  * @format
  */
 
+import 'reflect-metadata';
 import React from 'react';
 import {StyleSheet, Text, useColorScheme, View} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {Home} from './Home';
-import {createState, State} from '@hookstate/core';
+import {createState} from '@hookstate/core';
 import {EE1DCounterScreen} from './TextHookTest';
 import {
   createNativeStackNavigator,
@@ -24,6 +25,11 @@ import {RequestConfig, ServiceBuilder, Response} from 'ts-retrofit';
 import {OperatorList} from './operator-module/OperatorList';
 import {OperatorService} from './api/retrofit';
 import {OperatorDetails} from './operator-module/OperatorDetails';
+import {Blog} from './db/blog';
+import {Author} from './db/author';
+import {DataSource} from 'typeorm';
+import {DBList} from './db-testing-module/DBList';
+import {CreateBlog} from './db-testing-module/CreateBlog';
 
 /*export const TSafeTemplate: React.FC<{children: any; state: State<any>}> = ({
   childrem,
@@ -66,6 +72,8 @@ export type StackParamMap = {
   HookTest: undefined;
   Maximilan: undefined;
   OpDetails: {id: string};
+  DBModule: undefined;
+  CreateBlog: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParamMap>();
@@ -91,30 +99,86 @@ export const EE1D = createState({uses: 3, cooldown: 0});
   return <></>;
 };*/
 
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Maximilan">
-        <Stack.Screen
-          name="HookTest"
-          options={{title: 'EY?'}}
-          component={EE1DCounterScreen}
-        />
-        <Stack.Screen
-          name="Maximilan"
-          options={{title: 'Operators'}}
-          component={OperatorList}
-        />
-        <Stack.Screen
-          name="OpDetails"
-          options={({route}: OpProp) => ({title: route.params.id})}
-          component={OperatorDetails}
-        />
-        <Stack.Screen name="Home" component={Home} options={{title: 'Home?'}} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+export let dataSource: DataSource;
+
+class App extends React.Component {
+  constructor(props: Readonly<{}> | {}) {
+    super(props);
+    this.connect().then((datasource: DataSource) =>
+      this.seedServer(datasource),
+    );
+  }
+
+  async seedServer(datasource: DataSource) {
+    dataSource = datasource;
+    const author = await datasource
+      .getRepository(Author)
+      .save(new Author('P u l s e w r a i t h'));
+    console.log(JSON.stringify(author));
+    const blog1 = new Blog(
+      'Blog 1- Rafia apuke jalaitesi',
+      'Ajke rafia apur ashepashe asi, uni ar shimon vai ki jeno shikhtese',
+      author,
+    );
+    const blog2 = new Blog(
+      'Blog 2 - Rafia apu confused ken jani',
+      'ki jani ki bostu',
+      author,
+    );
+    const blogRepository = dataSource.getRepository(Blog);
+    await blogRepository.save(blog1);
+    await blogRepository.save(blog2);
+  }
+
+  connect() {
+    return new DataSource({
+      type: 'react-native',
+      database: 'test',
+      location: 'default',
+      logging: ['error', 'query', 'schema'],
+      synchronize: true,
+      entities: [Author, Blog],
+    }).initialize();
+  }
+  render() {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Maximilan">
+          <Stack.Screen
+            name="HookTest"
+            options={{title: 'EY?'}}
+            component={EE1DCounterScreen}
+          />
+          <Stack.Screen
+            name="Maximilan"
+            options={{title: 'Operators'}}
+            component={OperatorList}
+          />
+          <Stack.Screen
+            name="DBModule"
+            options={{title: 'BlogList'}}
+            component={DBList}
+          />
+          <Stack.Screen
+            name="CreateBlog"
+            options={{title: 'Create Blog'}}
+            component={CreateBlog}
+          />
+          <Stack.Screen
+            name="OpDetails"
+            options={({route}: OpProp) => ({title: route.params.id})}
+            component={OperatorDetails}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{title: 'Home?'}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+}
 
 export const styles = StyleSheet.create({
   sectionContainer: {
