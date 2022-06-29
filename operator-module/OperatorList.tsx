@@ -17,29 +17,6 @@ import {FlatGrid} from 'react-native-super-grid';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ButtonGroup} from '@rneui/themed';
 import {Image} from 'react-native-expo-image-cache';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 22,
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-  image: {
-    maxWidth: 70,
-    height: 70,
-  },
-  lowText: {
-    padding: 10,
-    fontSize: 18,
-    fontStyle: 'italic',
-    fontWeight: 'bold',
-    color: 'white',
-  },
-});
 export const OperatorList = ({
   navigation,
 }: NativeStackScreenProps<StackParamMap, 'Maximilan'>) => {
@@ -47,6 +24,29 @@ export const OperatorList = ({
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 22,
+    },
+    item: {
+      padding: 10,
+      fontSize: 18,
+      height: 44,
+    },
+    image: {
+      maxWidth: 70,
+      height: 70,
+    },
+    lowText: {
+      padding: 10,
+      fontSize: 18,
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      color: isDarkMode ? 'white' : 'black',
+    },
+  });
 
   const opListState = useState<Operator[]>([]);
 
