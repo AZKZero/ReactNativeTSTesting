@@ -2,13 +2,13 @@ import {
   Entity,
   Column,
   OneToMany,
-  PrimaryGeneratedColumn,
   PrimaryColumn,
+  BaseEntity,
 } from 'typeorm';
-import {Blog} from './blog';
+import {Blog} from './blog-active';
 
-@Entity('author')
-export class Author {
+@Entity()
+export class Author extends BaseEntity {
   // @ts-ignore
   @PrimaryColumn('int', {generated: 'increment'})
   id: number;

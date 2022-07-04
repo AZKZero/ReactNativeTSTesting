@@ -9,27 +9,29 @@
  */
 
 import 'reflect-metadata';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, useColorScheme, View} from 'react-native';
-
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {Home} from './Home';
-import {createState} from '@hookstate/core';
+import {createState, useState} from '@hookstate/core';
 import {EE1DCounterScreen} from './TextHookTest';
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import {RequestConfig, ServiceBuilder, Response} from 'ts-retrofit';
+import {RequestConfig, Response, ServiceBuilder} from 'ts-retrofit';
 import {OperatorList} from './operator-module/OperatorList';
 import {OperatorService} from './api/retrofit';
 import {OperatorDetails} from './operator-module/OperatorDetails';
-import {Blog} from './db/blog';
-import {Author} from './db/author';
-import {DataSource} from 'typeorm/browser';
+// import {Blog} from './db/blog-active';
+// import {Author} from './db/author-active';
+import {DataSource} from 'typeorm';
 import {DBList} from './db-testing-module/DBList';
 import {CreateBlog} from './db-testing-module/CreateBlog';
+import {LoginScreen} from './auth/Login';
+import {Author} from './db/author';
+import {Blog} from './db/blog';
 
 /*export const TSafeTemplate: React.FC<{children: any; state: State<any>}> = ({
   childrem,
@@ -70,10 +72,11 @@ export const Section: React.FC<{
 export type StackParamMap = {
   Home: undefined;
   HookTest: undefined;
-  Maximilan: undefined;
+  OpList: undefined;
   OpDetails: {id: string};
   DBModule: undefined;
   CreateBlog: undefined;
+  Login: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParamMap>();
@@ -82,6 +85,7 @@ export type Props = NativeStackScreenProps<StackParamMap, 'Home'>;
 export type OpProp = NativeStackScreenProps<StackParamMap, 'OpDetails'>;
 
 export const EE1D = createState({uses: 3, cooldown: 0});
+export const loggedIn = createState(true);
 
 /*interface Properties<T> {
   renderItem: (item: T) => React.ReactNode;
@@ -101,84 +105,144 @@ export const EE1D = createState({uses: 3, cooldown: 0});
 
 export let dataSource: DataSource;
 
-class App extends React.Component {
-  constructor(props: Readonly<{}> | {}) {
-    super(props);
-    this.connect().then((datasource: DataSource) =>
+/*this.connect().then((datasource: DataSource) =>
       this.seedServer(datasource),
-    );
-  }
+    );*/
 
-  async seedServer(datasource: DataSource) {
-    dataSource = datasource;
-    // IMPLEMENTATION 1
-    const author = new Author('P u l s e w r a i t h');
-    await datasource.getRepository(Author).save(author);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function seedServer(datasource: DataSource) {
+  dataSource = datasource;
+  // await datasource.getRepository(Author).clear();
+  // await datasource.getRepository(Blog).clear();
+  const authorRepository = dataSource.getRepository(Author);
+  const blogRepository = dataSource.getRepository(Blog);
 
-    // IMPLEMENTATION 2
-    /*const author = await datasource
-      .getRepository(Author)
-      .save(new Author('P u l s e w r a i t h'));*/
-    console.log(JSON.stringify(author));
-    const blog1 = new Blog('Blog 1', 'Content 1', author);
-    const blog2 = new Blog('Blog 2', 'Content 2', author);
-    const blogRepository = dataSource.getRepository(Blog);
-    await blogRepository.save(blog1);
-    await blogRepository.save(blog2);
+  // IMPLEMENTATION 1
+  /* const author = new Author('P u l s e w r a i t h');
+  await datasource.getRepository(Author).save(author);*/
 
-    console.log(JSON.stringify(await datasource.getRepository(Author).find()));
-    console.log(JSON.stringify(await blogRepository.find()));
-  }
+  // IMPLEMENTATION 2
+  /*const data = new Author();
+  data.name = 'P u l s e w r a i t h';
+  const author = await datasource.getRepository(Author).save(data);*/
+  // IMPLEMENTATION 3
+  const author = new Author();
+  author.name = 'P u l s e w r a i t h';
+  let insertResult = await authorRepository
+    .createQueryBuilder()
+    .insert()
+    .into(Author)
+    .updateEntity(true)
+    .values(author)
+    .execute();
+  console.log(JSON.stringify(insertResult));
+  console.log(JSON.stringify(author));
+  // IMPLEMENTATION 4
+  /*const data = new Author();
+  data.name = 'P u l s e w r a i t h';
+  const author = await Author.save(data);*/
 
-  connect() {
-    return new DataSource({
-      type: 'react-native',
-      database: 'test',
-      location: 'default',
-      logging: ['error', 'query', 'schema'],
-      synchronize: true,
-      entities: [Author, Blog],
-    }).initialize();
-  }
-  render() {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Maximilan">
-          <Stack.Screen
-            name="HookTest"
-            options={{title: 'EY?'}}
-            component={EE1DCounterScreen}
-          />
-          <Stack.Screen
-            name="Maximilan"
-            options={{title: 'Operators'}}
-            component={OperatorList}
-          />
-          <Stack.Screen
-            name="DBModule"
-            options={{title: 'BlogList'}}
-            component={DBList}
-          />
-          <Stack.Screen
-            name="CreateBlog"
-            options={{title: 'Create Blog'}}
-            component={CreateBlog}
-          />
-          <Stack.Screen
-            name="OpDetails"
-            options={({route}: OpProp) => ({title: route.params.id})}
-            component={OperatorDetails}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{title: 'Home?'}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+  console.log(JSON.stringify(author));
+  const blog1 = new Blog('Blog 1', 'Content 1', author);
+  const blog2 = new Blog('Blog 2', 'Content 2', author);
+  console.log(JSON.stringify(await blogRepository.save(blog1, {reload: true})));
+  console.log(JSON.stringify(await blogRepository.save(blog2)));
+  // console.log(JSON.stringify(await blog1.save()));
+  // console.log(JSON.stringify(await blog2.save()));
+
+  console.log(JSON.stringify(await authorRepository.find()));
+  console.log(JSON.stringify(await blogRepository.find()));
+  // console.log(JSON.stringify(await Author.find()));
+  // console.log(JSON.stringify(await Blog.find()));
 }
+
+/*async function connect() {
+  return new DataSource({
+    type: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'test',
+    password: 'test',
+    database: 'test',
+    logging: ['error', 'query', 'schema'],
+    synchronize: true,
+    entities: [Author, Blog],
+  }).initialize();
+}*/
+const App = () => {
+  useEffect(() => {
+    // connect().then(value => seedServer(value));
+  }, []);
+  const loggedInLocal = useState(loggedIn);
+  const linking = {
+    prefixes: ['ops://'],
+    config: {
+      screens: {
+        /*OpList: {
+          // initialRouteName: 'OpList',
+          path: 'operators_list',
+          screens: {
+            OpDetails: {
+              path: 'operator_details',
+            },
+          },
+        },*/
+        OpDetails: {
+          path: 'operator_details',
+        },
+        NoMatch: '*',
+      },
+    },
+  };
+  return (
+    <NavigationContainer linking={linking}>
+      <Stack.Navigator>
+        {loggedInLocal.get() ? (
+          <>
+            <Stack.Screen
+              name="OpList"
+              options={{title: 'Operators'}}
+              component={OperatorList}
+            />
+            <Stack.Screen
+              name="OpDetails"
+              options={({route}: OpProp) => ({title: route.params.id})}
+              component={OperatorDetails}
+            />
+            <Stack.Screen
+              name="HookTest"
+              options={{title: 'EY?'}}
+              component={EE1DCounterScreen}
+            />
+            <Stack.Screen
+              name="DBModule"
+              options={{title: 'BlogList'}}
+              component={DBList}
+            />
+            <Stack.Screen
+              name="CreateBlog"
+              options={{title: 'Create Blog'}}
+              component={CreateBlog}
+            />
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{title: 'Home?'}}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Login"
+              options={{title: 'Login'}}
+              component={LoginScreen}
+            />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export const styles = StyleSheet.create({
   sectionContainer: {
@@ -206,6 +270,6 @@ const myLogCallback = (config: RequestConfig, response: Response) => {
   console.log(log); // [GET] http://localhost:12345/ping 200
 };
 export const service = new ServiceBuilder()
-  .setEndpoint('http://192.168.88.123:3000')
+  .setEndpoint('http://192.168.88.128:3000')
   .setLogCallback(myLogCallback)
   .build(OperatorService);

@@ -1,16 +1,18 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   ManyToOne,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
+
 } from 'typeorm';
-import {Author} from './author';
+import {Author} from './author-active';
 import {JoinColumn} from 'typeorm';
 
-@Entity('blog')
-export class Blog {
+@Entity()
+export class Blog extends BaseEntity {
   constructor(title: string, body: string, author: Author) {
+    super();
     this.title = title;
     this.body = body;
     this.author = author;

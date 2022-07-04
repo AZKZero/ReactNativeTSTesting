@@ -2,7 +2,6 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Button,
   Text,
   TouchableHighlight,
   useColorScheme,
@@ -19,7 +18,7 @@ import {ButtonGroup} from '@rneui/themed';
 import {Image} from 'react-native-expo-image-cache';
 export const OperatorList = ({
   navigation,
-}: NativeStackScreenProps<StackParamMap, 'Maximilan'>) => {
+}: NativeStackScreenProps<StackParamMap, 'OpList'>) => {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -83,10 +82,10 @@ export const OperatorList = ({
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Button
+      {/*<Button
         title={'Go to DB'}
         onPress={() => navigation.navigate('DBModule')}
-      />
+      />*/}
       <ButtonGroup
         selectedIndex={selectedIndex.get()}
         buttons={['Attackers', 'Defenders']}
