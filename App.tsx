@@ -10,7 +10,7 @@
 
 import 'reflect-metadata';
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {Linking, StyleSheet, Text, useColorScheme, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {Home} from './Home';
@@ -85,7 +85,7 @@ export type Props = NativeStackScreenProps<StackParamMap, 'Home'>;
 export type OpProp = NativeStackScreenProps<StackParamMap, 'OpDetails'>;
 
 export const EE1D = createState({uses: 3, cooldown: 0});
-export const loggedIn = createState(true);
+export const loggedIn = createState(false);
 
 /*interface Properties<T> {
   renderItem: (item: T) => React.ReactNode;
@@ -172,21 +172,29 @@ async function seedServer(datasource: DataSource) {
 const App = () => {
   useEffect(() => {
     // connect().then(value => seedServer(value));
+    loggedInLocal.set(true);
+    Linking.canOpenURL('ops://operators_list/operator_details?id=hibana').then(
+      async value => {
+        console.log(`Can Open Url? ${value}`);
+        console.log(`Initial Url ${await Linking.getInitialURL()}`);
+        /*const initialUrl = await Linking.getInitialURL();
+        Linking.addEventListener('url', event => {
+
+        });*/
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const loggedInLocal = useState(loggedIn);
+  const hasRouted = useState(false);
   const linking = {
     prefixes: ['ops://'],
     config: {
+      initialRouteName: 'OpList',
       screens: {
-        /*OpList: {
-          // initialRouteName: 'OpList',
+        OpList: {
           path: 'operators_list',
-          screens: {
-            OpDetails: {
-              path: 'operator_details',
-            },
-          },
-        },*/
+        },
         OpDetails: {
           path: 'operator_details',
         },
@@ -195,8 +203,20 @@ const App = () => {
     },
   };
   return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator>
+    // @ts-ignore
+    <NavigationContainer linking={loggedInLocal.get() && linking}>
+      <Stack.Navigator
+        screenListeners={async props => {
+          if (
+            props.route.name === 'OpList' &&
+            (await Linking.getInitialURL()) != null &&
+            loggedInLocal.get({stealth: true}) &&
+            !hasRouted.get({stealth: true})
+          ) {
+            hasRouted.set(true);
+            await Linking.openURL((await Linking.getInitialURL()) as string);
+          }
+        }}>
         {loggedInLocal.get() ? (
           <>
             <Stack.Screen
