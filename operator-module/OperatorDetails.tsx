@@ -55,9 +55,7 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
       color: 'white',
     },
     image: {
-      flex: 2,
-      maxWidth: 200,
-      height: 200,
+      flex: 1,
     },
     image2: {
       flex: 2,
@@ -92,7 +90,7 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
               style={styles.image}
               source={{uri: opDetailsState.get().png}}
             />
-            <View style={{flex: 3}}>
+            <View style={{flex: 2}}>
               <Text style={styles.highText}>{opDetailsState.get().name}</Text>
               <Text style={styles.highText}>
                 {opDetailsState.get().bio.real_name}
