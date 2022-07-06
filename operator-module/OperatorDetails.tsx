@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {
+  Dimensions,
   FlatList,
   Image, ImageBackground,
   SafeAreaView,
@@ -17,6 +18,8 @@ import {OpProp, service} from '../App';
 import React from 'react';
 import * as Progress from 'react-native-progress';
 import RenderHtml from 'react-native-render-html';
+import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import { ImageWrapper } from "../utils/ImageWrapper";
 
 export const OperatorDetails = ({route, navigation}: OpProp) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -32,6 +35,12 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
       display: 'flex',
       flexDirection: 'row',
       justifyContent:"space-between"
+    },
+    flex2: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent:"space-between",
+      flexWrap:"wrap"
     },
     highText: {
      color: 'white',
@@ -58,14 +67,20 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
       flex: 1,
     },
     image2: {
-      flex: 2,
-      maxWidth: 100,
-      height: 100,
-      margin: 10
+      width: Dimensions.get('window').width,
+      resizeMode: "contain",
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      left: 0,
+      right:0
     },
   });
 
-  const opStatState = useState<StatsOperator>(() => service.getOperatorStats('pc', 'Ghostware-Zero', route.params.id).then((value) => value.data))
+  const opStatState = useState<StatsOperator>(() => service.getOperatorStats('pc', 'Ghostware-Zero', route.params.id).then((value) => {
+    console.log(value.data.header);
+    return value.data;
+  }))
 
   const opDetailsState = useState<Operator>(() =>
     service.getOperator(route.params.id).then(value => {
@@ -132,12 +147,15 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
           {opStatState.promised?
             <Progress.Pie indeterminate={true} size={50} style={{alignSelf:'center'}} />
             : <View>
-                <View style={styles.flex}>
-                  <Image
-                    style={styles.image2}
-                    source={{uri: (opStatState.get() as StatsOperator).header}}
-                  />
-                  <View style={{flex: 3}}>
+                  <View>
+                    {/*<Image
+                    style={{width:Dimensions.get('window').width*0.7, height: '100%', resizeMode: 'contain'}}
+                    source={{ uri: (opStatState.get() as StatsOperator).header }}
+                  />*/}
+                    <ImageWrapper source={{ uri: (opStatState.get() as StatsOperator).header }} width={Dimensions.get('window').width*0.7}/>
+                    {opStatState.get().time_played=='0h 0m'? <Image source={require('./../assets/twotone_lock_black_24dp.png')} style={{ zIndex: 1, bottom: 0, right: Dimensions.get('window').width*0.15, position:'absolute' }} />: <></>}
+                  </View>
+                  <View style={{alignSelf: 'center'}}>
                     <Text style={styles.highText}>{(opStatState.get() as StatsOperator).name}</Text>
                     <Text style={styles.highText}>
                       {(opStatState.get() as StatsOperator).operator_stat}
@@ -145,7 +163,6 @@ export const OperatorDetails = ({route, navigation}: OpProp) => {
                     <Text style={styles.highText}>
                       {(opStatState.get() as StatsOperator).time_played}
                     </Text>
-                  </View>
                 </View>
                 <Text style={styles.lowText}>{`K/D: ${(opStatState.get() as StatsOperator).kd}`}</Text>
                 <Text style={styles.lowText}>{`Kills: ${(opStatState.get() as StatsOperator).kills}`}</Text>
