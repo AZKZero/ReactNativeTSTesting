@@ -14,7 +14,7 @@ import {service, StackParamMap} from '../App';
 import {Operator} from '../api/retrofit';
 import {FlatGrid} from 'react-native-super-grid';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {ButtonGroup} from '@rneui/themed';
+import {Button, ButtonGroup} from '@rneui/themed';
 import {Image} from 'react-native-expo-image-cache';
 export const OperatorList = ({
   navigation,
@@ -86,6 +86,10 @@ export const OperatorList = ({
         title={'Go to DB'}
         onPress={() => navigation.navigate('DBModule')}
       />*/}
+      <Button
+        title={'Infinity Tangent'}
+        onPress={() => navigation.navigate('InfinityTangent')}
+      />
       <ButtonGroup
         selectedIndex={selectedIndex.get()}
         buttons={['Attackers', 'Defenders']}

@@ -32,6 +32,7 @@ import {CreateBlog} from './db-testing-module/CreateBlog';
 import {LoginScreen} from './auth/Login';
 import {Author} from './db/author';
 import {Blog} from './db/blog';
+import {InfinityTangent} from './test-ui/InfinityTangent';
 
 /*export const TSafeTemplate: React.FC<{children: any; state: State<any>}> = ({
   childrem,
@@ -77,6 +78,7 @@ export type StackParamMap = {
   DBModule: undefined;
   CreateBlog: undefined;
   Login: undefined;
+  InfinityTangent: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParamMap>();
@@ -216,6 +218,7 @@ const App = () => {
             hasRouted.set(true);
             await Linking.openURL((await Linking.getInitialURL()) as string);
           }
+          return props;
         }}>
         {loggedInLocal.get() ? (
           <>
@@ -228,6 +231,11 @@ const App = () => {
               name="OpDetails"
               options={({route}: OpProp) => ({title: route.params.id})}
               component={OperatorDetails}
+            />
+            <Stack.Screen
+              name={'InfinityTangent'}
+              options={{title: 'Infinity Tagnent'}}
+              component={InfinityTangent}
             />
             <Stack.Screen
               name="HookTest"
