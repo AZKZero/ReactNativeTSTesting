@@ -16,10 +16,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Home} from './Home';
 import {createState, useState} from '@hookstate/core';
 import {EE1DCounterScreen} from './TextHookTest';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RequestConfig, Response, ServiceBuilder} from 'ts-retrofit';
 import {OperatorList} from './operator-module/OperatorList';
 import {OperatorService} from './api/retrofit';
@@ -130,13 +127,7 @@ async function seedServer(datasource: DataSource) {
   // IMPLEMENTATION 3
   const author = new Author();
   author.name = 'P u l s e w r a i t h';
-  let insertResult = await authorRepository
-    .createQueryBuilder()
-    .insert()
-    .into(Author)
-    .updateEntity(true)
-    .values(author)
-    .execute();
+  let insertResult = await authorRepository.createQueryBuilder().insert().into(Author).updateEntity(true).values(author).execute();
   console.log(JSON.stringify(insertResult));
   console.log(JSON.stringify(author));
   // IMPLEMENTATION 4
@@ -175,16 +166,14 @@ const App = () => {
   useEffect(() => {
     // connect().then(value => seedServer(value));
     loggedInLocal.set(true);
-    Linking.canOpenURL('ops://operators_list/operator_details?id=hibana').then(
-      async value => {
-        console.log(`Can Open Url? ${value}`);
-        console.log(`Initial Url ${await Linking.getInitialURL()}`);
-        /*const initialUrl = await Linking.getInitialURL();
+    Linking.canOpenURL('ops://operators_list/operator_details?id=hibana').then(async value => {
+      console.log(`Can Open Url? ${value}`);
+      console.log(`Initial Url ${await Linking.getInitialURL()}`);
+      /*const initialUrl = await Linking.getInitialURL();
         Linking.addEventListener('url', event => {
 
         });*/
-      },
-    );
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const loggedInLocal = useState(loggedIn);
@@ -222,49 +211,17 @@ const App = () => {
         }}>
         {loggedInLocal.get() ? (
           <>
-            <Stack.Screen
-              name="OpList"
-              options={{title: 'Operators'}}
-              component={OperatorList}
-            />
-            <Stack.Screen
-              name="OpDetails"
-              options={({route}: OpProp) => ({title: route.params.id})}
-              component={OperatorDetails}
-            />
-            <Stack.Screen
-              name={'InfinityTangent'}
-              options={{title: 'Infinity Tagnent'}}
-              component={InfinityTangent}
-            />
-            <Stack.Screen
-              name="HookTest"
-              options={{title: 'EY?'}}
-              component={EE1DCounterScreen}
-            />
-            <Stack.Screen
-              name="DBModule"
-              options={{title: 'BlogList'}}
-              component={DBList}
-            />
-            <Stack.Screen
-              name="CreateBlog"
-              options={{title: 'Create Blog'}}
-              component={CreateBlog}
-            />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{title: 'Home?'}}
-            />
+            <Stack.Screen name="OpList" options={{title: 'Operators'}} component={OperatorList} />
+            <Stack.Screen name="OpDetails" options={({route}: OpProp) => ({title: route.params.id})} component={OperatorDetails} />
+            <Stack.Screen name={'InfinityTangent'} options={{title: 'Infinity Tagnent'}} component={InfinityTangent} />
+            <Stack.Screen name="HookTest" options={{title: 'EY?'}} component={EE1DCounterScreen} />
+            <Stack.Screen name="DBModule" options={{title: 'BlogList'}} component={DBList} />
+            <Stack.Screen name="CreateBlog" options={{title: 'Create Blog'}} component={CreateBlog} />
+            <Stack.Screen name="Home" component={Home} options={{title: 'Home?'}} />
           </>
         ) : (
           <>
-            <Stack.Screen
-              name="Login"
-              options={{title: 'Login'}}
-              component={LoginScreen}
-            />
+            <Stack.Screen name="Login" options={{title: 'Login'}} component={LoginScreen} />
           </>
         )}
       </Stack.Navigator>
@@ -297,7 +254,5 @@ const myLogCallback = (config: RequestConfig, response: Response) => {
   const log = `[${config.method}] ${config.url} ${response.status} `; //${JSON.stringify(response.data)}
   console.log(log); // [GET] http://localhost:12345/ping 200
 };
-export const service = new ServiceBuilder()
-  .setEndpoint('http://192.168.88.128:3000')
-  .setLogCallback(myLogCallback)
-  .build(OperatorService);
+// export const service = new ServiceBuilder().setEndpoint('http://192.168.88.128:3000').setLogCallback(myLogCallback).build(OperatorService);
+export const service = new ServiceBuilder().setEndpoint('http://192.168.0.105:3000').setLogCallback(myLogCallback).build(OperatorService);

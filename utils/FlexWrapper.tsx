@@ -10,7 +10,7 @@ export const FlexWrapper: React.FC<{
       display: 'flex',
       flexDirection: direction,
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
     },
   });
   return <View style={style.flexer}>{children}</View>;
