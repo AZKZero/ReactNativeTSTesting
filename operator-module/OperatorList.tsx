@@ -1,12 +1,4 @@
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, Text, TouchableHighlight, useColorScheme, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import {useHookEffect, useState} from '@hookstate/core';
@@ -16,9 +8,7 @@ import {FlatGrid} from 'react-native-super-grid';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button, ButtonGroup} from '@rneui/themed';
 import {Image} from 'react-native-expo-image-cache';
-export const OperatorList = ({
-  navigation,
-}: NativeStackScreenProps<StackParamMap, 'OpList'>) => {
+export const OperatorList = ({navigation}: NativeStackScreenProps<StackParamMap, 'OpList'>) => {
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -65,17 +55,11 @@ export const OperatorList = ({
   useHookEffect(() => {
     const index = selectedIndex.value;
     if (index === 0) {
-      service
-        .listOperators(true)
-        .then(value => opListState.set(value.data.data));
+      service.listOperators(true).then(value => opListState.set(value.data.data));
     } else if (index === 1) {
-      service
-        .listOperators(false)
-        .then(value => opListState.set(value.data.data));
+      service.listOperators(false).then(value => opListState.set(value.data.data));
     } else {
-      service
-        .listAllOperators()
-        .then(value => opListState.set(value.data.data));
+      service.listAllOperators().then(value => opListState.set(value.data.data));
     }
   }, [selectedIndex.value]);
 
@@ -86,10 +70,7 @@ export const OperatorList = ({
         title={'Go to DB'}
         onPress={() => navigation.navigate('DBModule')}
       />*/}
-      <Button
-        title={'Infinity Tangent'}
-        onPress={() => navigation.navigate('InfinityTangent')}
-      />
+      <Button title={'Infinity Tangent'} onPress={() => navigation.navigate('InfinityTangent')} />
       <ButtonGroup
         selectedIndex={selectedIndex.get()}
         buttons={['Attackers', 'Defenders']}
@@ -108,10 +89,7 @@ export const OperatorList = ({
         data={opListState.get()}
         style={{marginBottom: 50}}
         renderItem={info => (
-          <TouchableHighlight
-            onPress={() =>
-              navigation.navigate('OpDetails', {id: info.item.id})
-            }>
+          <TouchableHighlight onPress={() => navigation.navigate('OpDetails', {id: info.item.id})}>
             <View>
               <Image style={styles.image} {...{uri: info.item.png}} />
               <Text style={styles.lowText}>{info.item.name}</Text>
