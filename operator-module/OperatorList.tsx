@@ -89,7 +89,7 @@ export const OperatorList = ({navigation}: NativeStackScreenProps<StackParamMap,
         data={opListState.get()}
         style={{marginBottom: 50}}
         renderItem={info => (
-          <TouchableHighlight onPress={() => navigation.navigate('OpDetails', {id: info.item.id})}>
+          <TouchableHighlight activeOpacity={0.5} onPress={() => navigation.navigate('OpDetails', {id: info.item.id})}>
             <View>
               <Image style={styles.image} {...{uri: info.item.png}} />
               <Text style={styles.lowText}>{info.item.name}</Text>

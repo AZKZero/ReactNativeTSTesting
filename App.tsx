@@ -254,5 +254,5 @@ const myLogCallback = (config: RequestConfig, response: Response) => {
   const log = `[${config.method}] ${config.url} ${response.status} `; //${JSON.stringify(response.data)}
   console.log(log); // [GET] http://localhost:12345/ping 200
 };
-// export const service = new ServiceBuilder().setEndpoint('http://192.168.88.128:3000').setLogCallback(myLogCallback).build(OperatorService);
-export const service = new ServiceBuilder().setEndpoint('http://192.168.0.105:3000').setLogCallback(myLogCallback).build(OperatorService);
+export const service = new ServiceBuilder().setEndpoint('http://192.168.88.150:3000').setLogCallback(myLogCallback).build(OperatorService);
+// export const service = new ServiceBuilder().setEndpoint('http://192.168.0.105:3000').setLogCallback(myLogCallback).build(OperatorService);
