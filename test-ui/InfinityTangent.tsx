@@ -1,10 +1,14 @@
-import {Pressable, SafeAreaView, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import {Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import {FlexWrapper} from '../utils/FlexWrapper';
 import {Button} from '@rneui/themed';
 import {useState} from '@hookstate/core';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {DocumentDirectoryPath} from 'react-native-fs';
+import * as ScopedStorage from 'react-native-scoped-storage';
+import RNFetchBlob from 'rn-fetch-blob';
+const RNFS = require('react-native-fs');
 
 export const InfinityTangent = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -68,8 +72,77 @@ export const InfinityTangent = () => {
             {value.get().includes('7') ? <Button buttonStyle={style.button} title="Bayek of Siwa" /> : <></>}
             <Button buttonStyle={style.button} title="William Miles" />
           </FlexWrapper>
+          <Button
+            title={'Download Dokkaebi Wallpaper'}
+            onPress={async () => {
+              try {
+                await RNFS.mkdir(`${DocumentDirectoryPath}/TangentMaximus`);
+                let downloadResult = await RNFS.downloadFile({
+                  fromUrl: 'https://wallpapercave.com/download/dokkaebi-wallpapers-wp6813850',
+                  toFile: `${DocumentDirectoryPath}/TangentMaximus/dokka.png`,
+                }).promise;
+                console.log(downloadResult.statusCode);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          />
+          <Button
+            title={'Download Siege Wallpaper'}
+            onPress={async () => {
+              try {
+                await RNFS.mkdir(`${DocumentDirectoryPath}/TangentMaximus`);
+                let downloadResult = await RNFS.downloadFile({
+                  fromUrl: 'https://wallpapercave.com/download/rainbow-six-siege-wallpapers-wp1846953',
+                  toFile: `${DocumentDirectoryPath}/TangentMaximus/siege.jpg`,
+                }).promise;
+                console.log(downloadResult.statusCode);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          />
+          <Button
+            title={'Download Black Ice Wallpaper'}
+            onPress={async () => {
+              RNFetchBlob.config({
+                addAndroidDownloads: {
+                  useDownloadManager: true, // <-- this is the only thing required
+                  mediaScannable: true,
+                  // Optional, override notification setting (default to true)
+                  notification: true,
+                  // Optional, but recommended since android DownloadManager will fail when
+                  // the url does not contains a file extension, by default the mime type will be text/plain
+                  mime: 'image/jpg',
+                  description: 'File downloaded by download manager.',
+                },
+              })
+                .fetch('GET', 'https://wallpaperaccess.com/download/black-ice-r6-3085268')
+                .then(resp => {
+                  // the path of downloaded file
+                  console.log(resp.path());
+                });
+              /* try {
+                // await RNFS.mkdir(`${Platform.OS === 'android' ? DownloadDirectoryPath : DocumentDirectoryPath}/TangentMaximus`);
+                let dir = /!*Platform.OS === 'android' ? *!/ await ScopedStorage.openDocumentTree(true);
+                let downloadResult = await RNFS.downloadFile({
+                  fromUrl: 'https://wallpaperaccess.com/download/black-ice-r6-3085268',
+                  toFile: `${DocumentDirectoryPath}/blackice.jpg`,
+                }).promise;
+                console.log(downloadResult.statusCode);
+                console.log(`${DocumentDirectoryPath}/blackice.jpg`);
+                console.log(await ScopedStorage.stat(`file:/${DocumentDirectoryPath}/blackice.jpg`));
+                console.log(dir);
+                console.log(`${`${dir.uri}/blackice.jpg`} ${`${dir.path}/blackice.jpg`}`);
+                await ScopedStorage.copyFile(`file:/${DocumentDirectoryPath}/blackice.jpg`, `${dir.uri}%2Fblackice.jpg`, async () => {
+                  console.log(await ScopedStorage.stat(`${dir.uri}%2Fblackice.jpg`));
+                });
+              } catch (e) {
+                console.error(e);
+              }*/
+            }}
+          />
         </View>
-
         {/*<TouchableWithoutFeedback*/}
       </SafeAreaView>
     </Pressable>
